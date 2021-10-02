@@ -64,3 +64,4 @@ if [[ -f /install/.nginx.lock ]]; then
 fi
 
 touch /install/.qbittorrent.lock
+touch /root/qbt
