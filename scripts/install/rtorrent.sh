@@ -124,3 +124,4 @@ if [[ -n $noexec ]]; then
 fi
 echo_success "rTorrent installed"
 touch /install/.rtorrent.lock
+touch /root/rt
