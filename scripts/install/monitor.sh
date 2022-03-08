@@ -34,11 +34,11 @@ isactive=$(systemctl is-active docker) # Verificando se o sistema ja tem o docke
 
 if [[ $isactive == "active" ]]; then
     echo "Ativando o serviço do Monitor"
-    docker run -d --name monitor -e "PUID=`id -u $username`" -e "PGID=`id -g $username`" -p 8555:80 -v "$logfolder":/log -v "$config":/var/www/html --restart=unless-stopped richarvey/nginx-php-fpm:1.10.3 >>"${log}" 2>&1
+    docker run -d --name monitor -e "PUID=$(id -u "$username")" -e "PGID=$(id -g "$username")" -p 8555:80 -v "$logfolder":/log -v "$config":/var/www/html --restart=unless-stopped richarvey/nginx-php-fpm:1.10.3 >> "${log}" 2>&1
 else
-    sudo curl -fsSl https://get.docker.com | bash >>"${log}" 2>&1
+    sudo curl -fsSl https://get.docker.com | bash >> "${log}" 2>&1
     echo "Ativando o serviço do Monitor"
-    docker run -d --name monitor -e "PUID=`id -u $username`" -e "PGID=`id -g $username`" -p 8555:80 -v "$logfolder":/log -v "$config":/var/www/html --restart=unless-stopped richarvey/nginx-php-fpm:1.10.3 >>"${log}" 2>&1
+    docker run -d --name monitor -e "PUID=$(id -u "$username")" -e "PGID=$(id -g "$username")" -p 8555:80 -v "$logfolder":/log -v "$config":/var/www/html --restart=unless-stopped richarvey/nginx-php-fpm:1.10.3 >> "${log}" 2>&1
 fi
 
 echo "Configurando o HTML do Monitor de Upload"
@@ -57,7 +57,7 @@ else
     sudo chown -R "$username":"$username" "$config"
     echo " Instalando Serviço de Upload para $username "
 
-    cat > /etc/systemd/system/monitor@.service <<SERVICE
+    cat > /etc/systemd/system/monitor@.service << SERVICE
 [Unit]
 Description=Move Service Daemon
 After=multi-user.target
@@ -74,7 +74,7 @@ WantedBy=multi-user.target
 SERVICE
 
     #cp /etc/swizzin/systemd/move.service /etc/systemd/system/monitor@.service
-    sed -i "s|PASTADELOG|"$logfolder/$username.log"|g" "$config/$username.sh"
+    sed -i "s|PASTADELOG|$logfolder/upload.log|g" "$config/$username.sh"
     sed -i "s|USER|$username|g" "$config/$username.sh"
 
     if [[ -e /root/qbt ]]; then
@@ -88,15 +88,13 @@ SERVICE
         sudo chown -R "$username":"$username" /home/"$username"/torrents/upload
         sudo chmod -R 775 /home/"$username"/torrents/upload
     fi
-        echo "--- Serviço de upload copiado! ---"
-        echo "--- Atualizando Daemon-reload! ---"
-        sudo systemctl daemon-reload
-        echo "--- Ativando Serviço! ---"
-        sudo systemctl enable monitor@"${user}" | sudo tee -a "${log}" 2>&1
-        echo "--- Serviço de upload copiado e ativado! ---"
+    echo "--- Serviço de upload copiado! ---"
+    echo "--- Atualizando Daemon-reload! ---"
+    sudo systemctl daemon-reload
+    echo "--- Ativando Serviço! ---"
+    sudo systemctl enable monitor@"${user}" | sudo tee -a "${log}" 2>&1
+    echo "--- Serviço de upload copiado e ativado! ---"
 fi
-
-
 
 if [[ -f /install/.nginx.lock ]]; then
     sleep 1
@@ -107,6 +105,5 @@ fi
 touch /install/.monitor.lock
 
 echo "monitor Install Complete!"
-
 
 ###################################################################################

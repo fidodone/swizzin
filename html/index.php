@@ -66,7 +66,7 @@ div {
           <tbody>
             <tr>
               <td colspan="6" bgcolor="#FFFFFF" style="color: #F7F6F6; font-family: Segoe, 'Segoe UI', 'DejaVu Sans', 'Trebuchet MS', Verdana, sans-serif; font-weight: bold; font-size: medium;"><span class="test" style="color: #000000; font-family: Segoe, 'Segoe UI', 'DejaVu Sans', 'Trebuchet MS', Verdana, sans-serif; font-size: 16px;">
-                <?php $output = shell_exec('tail -n 14 /log/USER.log');
+                <?php $output = shell_exec('tail -n 14 /log/upload.log');
 echo "<pre>$output</pre>";
 ?>
               </span></td>
