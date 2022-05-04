@@ -44,14 +44,18 @@ Group=%i
 ExecStartPre=-/bin/mkdir -p /home/%i/cloud/
 ExecStart=/usr/bin/rclone mount gdrive: /home/%i/cloud/ \
   --user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36' \
+  --allow-other \
   --config /home/%i/.config/rclone/rclone.conf \
+  --log-file /home/%i/%i.log \
+  --log-level INFO \
   --use-mmap \
-  --dir-cache-time 1h \
+  --dir-cache-time 24h \
   --timeout 30s \
   --umask 002 \
-  --allow-other \
-  --poll-interval=1h \
-  --vfs-cache-mode writes \
+  --vfs-write-back 5m \
+  --vfs-cache-max-size 50G \
+  --vfs-cache-max-age 24h \
+  --vfs-cache-mode full \
   --vfs-read-chunk-size 1M \
   --vfs-read-chunk-size-limit 64M \
   --tpslimit 10
