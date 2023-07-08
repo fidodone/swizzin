@@ -36,11 +36,7 @@ if [[ -n $(pidof apache2) ]]; then
 fi
 
 case $codename in
-    stretch)
-        mcrypt="php-mcrypt"
-        geoip="php-geoip"
-        ;;
-    bionic | focal | buster | bullseye)
+    focal | buster | bullseye)
         mcrypt=
         geoip="php-geoip"
         ;;
@@ -51,7 +47,7 @@ case $codename in
         ;;
 esac
 
-APT="nginx libnginx-mod-http-fancyindex subversion ssl-cert php-fpm libfcgi0ldbl php-cli php-dev php-xml php-curl php-xmlrpc php-json php-mbstring php-opcache php-xml php-zip ${geoip} ${mcrypt}"
+APT="nginx libnginx-mod-http-fancyindex subversion ssl-cert php-fpm libfcgi0ldbl php-cli php-dev php-xml php-curl php-xmlrpc php-json php-mbstring php-opcache php-zip ${geoip} ${mcrypt}"
 
 apt_install $APT
 mkdir -p /srv
@@ -70,6 +66,7 @@ for version in $phpv; do
         -e "s/;opcache.max_accelerated_files=2000/opcache.max_accelerated_files=4000/" \
         -e "s/;opcache.revalidate_freq=2/opcache.revalidate_freq=240/" /etc/php/$version/fpm/php.ini
     phpenmod -v $version opcache
+    sed -i 's/;env\[PATH\]/env[PATH]/g' /etc/php/$version/fpm/pool.d/www.conf
 done
 echo_progress_done "PHP config modified"
 

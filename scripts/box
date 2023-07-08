@@ -138,7 +138,7 @@ function _update() {
 
     #Checking for EOL releases
     case "$(_os_codename)" in
-        "bionic" | "focal" | "buster" | "stretch" | "bullseye" | "jammy")
+        "focal" | "buster" | "bullseye" | "jammy" | "bookworm")
             echo_log_only "OS supported"
             ;;
         *)
@@ -250,7 +250,7 @@ function _list() {
         spacing=$(echo $'\t' | pr -Te15)
         description=$(grep -i -m 1 \\\[\'$app $locale | cut -d= -f2 | sed "s/ '//g" | sed "s/';//g" | sed "s/\\\'/'/g")
         if [[ -z $description ]]; then description="Description missing"; fi
-        printf "${sgformat}" "$i"
+        printf "${sgformat}" "$app"
         echo -e "${description}\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
 
     done
